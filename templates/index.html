@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Segmentation using K-Means | Intelligent Retail Analytics</title>
+    <meta name="description" content="Discover meaningful customer groups using unsupervised machine learning and transform retail data into actionable business insights.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>SegmentIQ</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="/" class="nav-link active">Home</a></li>
+            <li><a href="/dashboard" class="nav-link">Dashboard</a></li>
+            <li><a href="/dashboard#dataset" class="nav-link">Dataset</a></li>
+            <li><a href="/dashboard#clustering" class="nav-link">Clustering</a></li>
+            <li><a href="/dashboard#insights" class="nav-link">Insights</a></li>
+            <li><a href="/dashboard#about" class="nav-link">About</a></li>
+        </ul>
+        <a href="/dashboard" class="btn-primary">
+            <span>Launch Analysis</span>
+            <i class="fa-solid fa-arrow-right"></i>
+        </a>
+    </nav>
+
+    <!-- Hero Landing Section -->
+    <main class="container">
+        <section class="hero">
+            <div class="hero-badge">
+                <i class="fa-solid fa-brain"></i>
+                <span>Machine Learning Customer Analytics</span>
+            </div>
+            <h1 class="hero-title">Customer Segmentation using K-Means</h1>
+            <p class="hero-subtitle">
+                Intelligent Retail Customer Analysis &amp; Behavioral Segmentation. Discover meaningful customer groups using unsupervised machine learning and transform retail data into actionable business insights.
+            </p>
+            <div class="hero-actions">
+                <a href="/dashboard" class="btn-primary">
+                    <span>Launch Analysis</span>
+                    <i class="fa-solid fa-rocket"></i>
+                </a>
+                <a href="/dashboard#about" class="btn-outline">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span>Learn Methodology</span>
+                </a>
+            </div>
+
+            <!-- Feature Cards -->
+            <div class="features-grid">
+                <div class="glass-card feature-card">
+                    <div class="feature-icon">
+                        <i class="fa-solid fa-diagram-project"></i>
+                    </div>
+                    <h3 class="feature-title">K-Means Clustering</h3>
+                    <p class="feature-desc">Unsupervised machine learning model with dynamic distance metrics and centroid optimization.</p>
+                </div>
+
+                <div class="glass-card feature-card">
+                    <div class="feature-icon">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <h3 class="feature-title">Customer Analytics</h3>
+                    <p class="feature-desc">Exploratory data analysis, missing value auditing, and standardized feature scaling.</p>
+                </div>
+
+                <div class="glass-card feature-card">
+                    <div class="feature-icon">
+                        <i class="fa-solid fa-chart-column"></i>
+                    </div>
+                    <h3 class="feature-title">Interactive Visualization</h3>
+                    <p class="feature-desc">Interactive 2D cluster plots, Elbow method curve, and comparative feature distributions.</p>
+                </div>
+
+                <div class="glass-card feature-card">
+                    <div class="feature-icon">
+                        <i class="fa-solid fa-lightbulb"></i>
+                    </div>
+                    <h3 class="feature-title">Business Insights</h3>
+                    <p class="feature-desc">Automated cluster archetypes and tailored marketing recommendations generated from real statistics.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 SegmentIQ — K-Means Customer Segmentation Platform | Built for ML Portfolio &amp; Internship Demonstration</p>
+    </footer>
+
+</body>
+</html>

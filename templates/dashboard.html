@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Analytics & Clustering Dashboard | SegmentIQ</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>SegmentIQ</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="/" class="nav-link">Home</a></li>
+            <li><a href="/dashboard" class="nav-link active">Dashboard</a></li>
+            <li><a href="#dataset" class="nav-link">Dataset</a></li>
+            <li><a href="#clustering" class="nav-link">Clustering</a></li>
+            <li><a href="#insights" class="nav-link">Insights</a></li>
+            <li><a href="#about" class="nav-link">About</a></li>
+        </ul>
+        <a href="/api/download-csv" class="btn-primary" id="downloadCsvBtn">
+            <i class="fa-solid fa-download"></i>
+            <span>Download CSV</span>
+        </a>
+    </nav>
+
+    <main class="container">
+        <!-- Header banner -->
+        <header style="margin-bottom: 2rem;">
+            <h1 style="font-size: 2.2rem;">Customer Segmentation Dashboard</h1>
+            <p style="color: var(--text-muted);">Real-time behavioral grouping &amp; unsupervised machine learning analytics</p>
+        </header>
+
+        <!-- KPI Cards Section -->
+        <section class="kpi-grid">
+            <div class="glass-card kpi-card">
+                <div class="kpi-icon" style="color: #818cf8; background: rgba(99, 102, 241, 0.15);">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <div>
+                    <div class="kpi-label">Total Customers</div>
+                    <div class="kpi-value" id="kpiTotalCustomers">--</div>
+                </div>
+            </div>
+
+            <div class="glass-card kpi-card">
+                <div class="kpi-icon" style="color: #38bdf8; background: rgba(6, 182, 212, 0.15);">
+                    <i class="fa-solid fa-cake-candles"></i>
+                </div>
+                <div>
+                    <div class="kpi-label">Average Age</div>
+                    <div class="kpi-value" id="kpiAvgAge">--</div>
+                </div>
+            </div>
+
+            <div class="glass-card kpi-card">
+                <div class="kpi-icon" style="color: #34d399; background: rgba(16, 185, 129, 0.15);">
+                    <i class="fa-solid fa-wallet"></i>
+                </div>
+                <div>
+                    <div class="kpi-label">Avg Income</div>
+                    <div class="kpi-value" id="kpiAvgIncome">--</div>
+                </div>
+            </div>
+
+            <div class="glass-card kpi-card">
+                <div class="kpi-icon" style="color: #fbbf24; background: rgba(245, 158, 11, 0.15);">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                </div>
+                <div>
+                    <div class="kpi-label">Avg Spending Score</div>
+                    <div class="kpi-value" id="kpiAvgSpending">--</div>
+                </div>
+            </div>
+
+            <div class="glass-card kpi-card">
+                <div class="kpi-icon" style="color: #c084fc; background: rgba(139, 92, 246, 0.15);">
+                    <i class="fa-solid fa-cubes"></i>
+                </div>
+                <div>
+                    <div class="kpi-label">Clusters (K)</div>
+                    <div class="kpi-value" id="kpiNumClusters">5</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Controls: Upload & Configuration -->
+        <section class="controls-grid" id="dataset">
+            <!-- Dataset Overview & Upload -->
+            <div class="glass-card">
+                <div class="chart-header">
+                    <h2><i class="fa-solid fa-database" style="color: var(--primary);"></i> Dataset Overview</h2>
+                    <label class="btn-outline" style="cursor: pointer;">
+                        <i class="fa-solid fa-upload"></i> Upload CSV
+                        <input type="file" id="fileUploadInput" accept=".csv" style="display: none;">
+                    </label>
+                </div>
+                <div id="uploadStatusMsg" style="font-size: 0.85rem; margin-bottom: 1rem;"></div>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1rem;">
+                    <div><strong style="color: var(--text-muted);">Rows:</strong> <span id="metaRows">--</span></div>
+                    <div><strong style="color: var(--text-muted);">Columns:</strong> <span id="metaCols">--</span></div>
+                    <div><strong style="color: var(--text-muted);">Missing Values:</strong> <span id="metaMissing">0</span></div>
+                    <div><strong style="color: var(--text-muted);">Status:</strong> <span class="segment-badge badge-success">Valid</span></div>
+                </div>
+                <div style="font-size: 0.85rem; color: var(--text-dim);">
+                    <strong>Detected Columns:</strong> <span id="metaColumnNames">--</span>
+                </div>
+            </div>
+
+            <!-- Clustering Configuration -->
+            <div class="glass-card" id="clustering">
+                <div class="chart-header">
+                    <h2><i class="fa-solid fa-sliders" style="color: var(--accent-purple);"></i> Clustering Controls</h2>
+                </div>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+                    Select features for clustering similarity and set the number of clusters (K).
+                </p>
+
+                <div class="form-group">
+                    <label class="form-label">Features to Include:</label>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <label style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.9rem;">
+                            <input type="checkbox" id="chkAge" value="Age" checked> Age
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.9rem;">
+                            <input type="checkbox" id="chkIncome" value="Annual Income (k$)" checked> Annual Income (k$)
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.9rem;">
+                            <input type="checkbox" id="chkSpending" value="Spending Score (1-100)" checked> Spending Score (1-100)
+                        </label>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 1rem; align-items: flex-end; margin-top: 1rem;">
+                    <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                        <label class="form-label">Number of Clusters (K):</label>
+                        <input type="number" id="kValueInput" class="form-input" min="2" max="10" value="5">
+                    </div>
+                    <button class="btn-primary" id="runClusteringBtn">
+                        <i class="fa-solid fa-play"></i> Run K-Means
+                    </button>
+                    <button class="btn-outline" id="runElbowBtn">
+                        <i class="fa-solid fa-chart-line"></i> Calculate Elbow
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Preprocessing Summary Banner -->
+        <div class="glass-card" id="preprocessingBanner" style="margin-bottom: 2rem; padding: 1.25rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <i class="fa-solid fa-filter" style="color: var(--accent-cyan); font-size: 1.2rem;"></i>
+                    <strong style="font-size: 0.95rem;">Preprocessing Summary:</strong>
+                </div>
+                <div style="display: flex; gap: 1.5rem; font-size: 0.85rem; color: var(--text-muted);">
+                    <span>Original Records: <strong style="color: #fff;" id="prepOriginal">200</strong></span>
+                    <span>Missing Values: <strong style="color: #fff;" id="prepMissing">0</strong></span>
+                    <span>Duplicates Removed: <strong style="color: #fff;" id="prepDuplicates">0</strong></span>
+                    <span>Records Used: <strong style="color: #fff;" id="prepRecords">200</strong></span>
+                    <span>Scaling: <strong style="color: var(--accent-emerald);">StandardScaler</strong></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Grid 1: Elbow Plot & Scatter Plot -->
+        <section class="charts-grid">
+            <div class="glass-card">
+                <div class="chart-header">
+                    <h3><i class="fa-solid fa-chart-line" style="color: var(--accent-amber);"></i> Elbow Method — Finding Optimal K</h3>
+                    <span class="segment-badge badge-info" id="recommendedKBadge">Recommended K: 5</span>
+                </div>
+                <div id="elbowChart" class="chart-container"></div>
+            </div>
+
+            <div class="glass-card">
+                <div class="chart-header">
+                    <h3><i class="fa-solid fa-circle-nodes" style="color: var(--primary);"></i> Customer Segments Scatter Plot</h3>
+                    <select id="filterClusterScatter" class="form-select" style="padding: 0.3rem 0.6rem; font-size: 0.85rem;">
+                        <option value="ALL">All Clusters</option>
+                    </select>
+                </div>
+                <div id="clusterScatterChart" class="chart-container"></div>
+            </div>
+        </section>
+
+        <!-- Charts Grid 2: Distribution & Comparison -->
+        <section class="charts-grid">
+            <div class="glass-card">
+                <div class="chart-header">
+                    <h3><i class="fa-solid fa-chart-column" style="color: var(--accent-emerald);"></i> Cluster Distribution (Customer Count)</h3>
+                </div>
+                <div id="clusterDistChart" class="chart-container"></div>
+            </div>
+
+            <div class="glass-card">
+                <div class="chart-header">
+                    <h3><i class="fa-solid fa-chart-bar" style="color: var(--accent-purple);"></i> Feature Averages by Cluster</h3>
+                </div>
+                <div id="clusterCompChart" class="chart-container"></div>
+            </div>
+        </section>
+
+        <!-- Business Insights Section -->
+        <section style="margin-bottom: 2rem;" id="insights">
+            <h2 style="font-size: 1.8rem; margin-bottom: 1rem;"><i class="fa-solid fa-lightbulb" style="color: var(--accent-amber);"></i> Customer Segment Analysis &amp; Marketing Strategies</h2>
+            <div class="segments-grid" id="insightsGrid">
+                <!-- Dynamically populated by script.js -->
+            </div>
+        </section>
+
+        <!-- Customer Search & Table Section -->
+        <section class="glass-card" style="margin-bottom: 2rem;">
+            <div class="chart-header">
+                <h2><i class="fa-solid fa-table-list" style="color: var(--accent-cyan);"></i> Customer Data Explorer</h2>
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <div style="display: flex; gap: 0.5rem;">
+                        <input type="text" id="searchCustomerIdInput" class="form-input" placeholder="Search by Customer ID..." style="padding: 0.4rem 0.8rem; font-size: 0.85rem; width: 220px;">
+                        <button class="btn-outline" id="searchCustomerBtn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">
+                            <i class="fa-solid fa-magnifying-glass"></i> Search
+                        </button>
+                    </div>
+                    <select id="filterClusterTable" class="form-select" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">
+                        <option value="ALL">Filter by Cluster (All)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div id="searchResultCard" style="display: none; margin-bottom: 1.5rem; padding: 1rem; border-radius: var(--radius-md); background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3);">
+                <!-- Search customer result details -->
+            </div>
+
+            <div class="table-responsive">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Customer ID</th>
+                            <th>Gender</th>
+                            <th>Age</th>
+                            <th>Annual Income (k$)</th>
+                            <th>Spending Score (1-100)</th>
+                            <th>Assigned Cluster</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dataTableBody">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Educational / Viva & About Section -->
+        <section class="glass-card" id="about">
+            <h2 style="font-size: 1.8rem; margin-bottom: 1rem;"><i class="fa-solid fa-graduation-cap" style="color: var(--primary);"></i> Educational &amp; Technical Viva Reference</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
+                <div>
+                    <h4 style="color: #a5b4fc; margin-bottom: 0.4rem;">What is K-Means Clustering?</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">
+                        K-Means is an unsupervised machine learning algorithm that partitions dataset points into K distinct, non-overlapping clusters based on Euclidean distance similarity to cluster centroids.
+                    </p>
+                </div>
+
+                <div>
+                    <h4 style="color: #a5b4fc; margin-bottom: 0.4rem;">What is the Elbow Method?</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">
+                        The Elbow Method computes Within-Cluster Sum of Squares (WCSS / Inertia) across a range of K values (2 to 10). The optimal K is selected at the "elbow point" where adding more clusters yields diminishing returns.
+                    </p>
+                </div>
+
+                <div>
+                    <h4 style="color: #a5b4fc; margin-bottom: 0.4rem;">Why Feature Scaling (StandardScaler)?</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">
+                        Distance-based algorithms like K-Means are sensitive to variable scales. Standardizing features to mean=0 and variance=1 prevents variables with larger ranges (e.g., Annual Income) from dominating distance calculations.
+                    </p>
+                </div>
+
+                <div>
+                    <h4 style="color: #a5b4fc; margin-bottom: 0.4rem;">Business Value of Customer Segmentation</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">
+                        Allows retail businesses to target high-value loyal spenders, re-engage price-sensitive shoppers, optimize marketing ROI, and design personalized product recommendation workflows.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <footer>
+        <p>&copy; 2026 SegmentIQ — K-Means Customer Segmentation Dashboard</p>
+    </footer>
+
+    <!-- Main JavaScript -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

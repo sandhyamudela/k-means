@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clustering Results & Business Insights | SegmentIQ</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>SegmentIQ Results</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="/" class="nav-link">Home</a></li>
+            <li><a href="/dashboard" class="nav-link">Dashboard</a></li>
+        </ul>
+    </nav>
+
+    <main class="container">
+        <section class="glass-card" style="margin-top: 2rem;">
+            <h1><i class="fa-solid fa-file-contract" style="color: var(--primary);"></i> Executive Clustering Report</h1>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">
+                Detailed analysis of customer segments generated using K-Means clustering algorithm.
+            </p>
+            <div id="resultsContent">
+                <p>Loading results summary...</p>
+            </div>
+            <div style="margin-top: 2rem;">
+                <a href="/dashboard" class="btn-primary">Return to Dashboard</a>
+                <a href="/api/download-csv" class="btn-outline">Download CSV</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 SegmentIQ — Results Summary</p>
+    </footer>
+</body>
+</html>
